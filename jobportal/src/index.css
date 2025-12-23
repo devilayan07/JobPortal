@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@import "tailwindcss";
+
+/* ---------------- BASE LAYER ---------------- */
+@layer base {
+  :root {
+    --color-border: 214.3 31.8% 91.4%;
+    --color-input: 214.3 31.8% 91.4%;
+    --color-ring: 222.2 84% 4.9%;
+    --color-background: 0 0% 100%;
+    --color-foreground: 222.2 84% 4.9%;
+    --color-primary: 222.2 47.4% 11.2%;
+    --color-primary-foreground: 210 40% 98%;
+    --color-secondary: 210 40% 96.1%;
+    --color-secondary-foreground: 222.2 47.4% 11.2%;
+    --color-muted: 210 40% 96.1%;
+    --color-muted-foreground: 215.4 16.3% 46.9%;
+    --color-accent: 210 40% 96.1%;
+    --color-accent-foreground: 222.2 47.4% 11.2%;
+    --color-card: 0 0% 100%;
+    --color-card-foreground: 222.2 84% 4.9%;
+  }
+}
+
+/* ---------------- COMPONENTS LAYER ---------------- */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply h-10 px-4 py-2
+           bg-[hsl(var(--color-primary))]
+           text-[hsl(var(--color-primary-foreground))]
+           hover:bg-[hsl(var(--color-primary))]/90;
+  }
+
+
+  .btn-secondary {
+    @apply h-10 px-4 py-2
+           bg-[hsl(var(--color-secondary))]
+           text-[hsl(var(--color-secondary-foreground))]
+           hover:bg-[hsl(var(--color-secondary))]/80;
+  }
+
+  .btn-outline {
+    @apply h-10 px-4 py-2
+           border border-[hsl(var(--color-input))]
+           bg-[hsl(var(--color-background))]
+           hover:bg-[hsl(var(--color-accent))]
+           hover:text-[hsl(var(--color-accent-foreground))];
+  }
+
+  .btn-ghost {
+    @apply h-10 px-4 py-2
+           hover:bg-[hsl(var(--color-accent))]
+           hover:text-[hsl(var(--color-accent-foreground))];
+  }
+
+  .card {
+    @apply rounded-lg border border-[hsl(var(--color-border))]
+           bg-[hsl(var(--color-card))]
+           text-[hsl(var(--color-card-foreground))]
+           shadow-sm;
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md
+           border border-[hsl(var(--color-input))]
+           bg-[hsl(var(--color-background))]
+           px-3 py-2 text-sm
+           placeholder:text-[hsl(var(--color-muted-foreground))]
+           focus-visible:outline-none
+           focus-visible:ring-2
+           focus-visible:ring-[hsl(var(--color-ring))]
+           disabled:cursor-not-allowed
+           disabled:opacity-50;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border border-transparent
+           px-2.5 py-0.5 text-xs font-semibold transition-colors
+           focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))];
+  }
+
+  .badge-default {
+    @apply bg-[hsl(var(--color-primary))]
+           text-[hsl(var(--color-primary-foreground))]
+           hover:bg-[hsl(var(--color-primary))]/80;
+  }
+
+  .badge-secondary {
+    @apply bg-[hsl(var(--color-secondary))]
+           text-[hsl(var(--color-secondary-foreground))]
+           hover:bg-[hsl(var(--color-secondary))]/80;
+  }
+
+  .badge-outline {
+    @apply border-[hsl(var(--color-border))]
+           text-[hsl(var(--color-foreground))];
+  }
+
+              .role-tab {
+                transition: all 0.2s ease;
+            }
+
+            .role-tab.active {
+                background: hsl(var(--color-primary));
+                color: hsl(var(--color-primary-foreground));
+            }
+
+
+  .skeleton {
+    @apply animate-pulse rounded-md bg-[hsl(var(--color-muted))];
+  }
+}
+
+/* ---------------- UTILITIES / CUSTOM CSS ---------------- */
+@layer utilities {
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    min-width: 200px;
+    z-index: 50;
+  }
+
+  .dropdown-content.show {
+    display: block;
+  }
+
+  .image-preview {
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  background-color: #f8f8f8;
+}
+
+ button:disabled{
+  @apply bg-gray-500 cursor-default
+}
+
+}
