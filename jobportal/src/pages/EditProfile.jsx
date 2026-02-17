@@ -50,7 +50,7 @@ function EditProfile() {
   })
 
   const[addSkills,setAddSkills]=useState("")
-  const userId=auth?.user?.id
+  const userId=auth?.profile?.id
 
   const fetchUserInfo=async()=>{
     try {

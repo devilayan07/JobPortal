@@ -21,7 +21,7 @@ function UserProfile() {
   const { auth } = useAuth();
   const [loading, setLoading] = useState(false);
   const { axiosInstance } = useAxios();
-  const userId = auth?.user?.id;
+  const userId = auth?.profile?.id;
 
   const fetchUserInfo = async () => {
     setLoading(true);

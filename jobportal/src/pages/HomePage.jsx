@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import HeroSection from "../components/HeroSection";
 import Search from "../components/Search";
 import JobType from "../components/JobType";
@@ -9,9 +9,11 @@ import SortJob from "../components/SortJob";
 import JobCard from "../components/JobCard";
 import Pagination from "../components/Pagination";
 import useJobs from "../hooks/useJobs";
-import axiosInstance from "../api/axiosInstance";
 import Loading from "../components/Loading";
 import { salaryRanges } from "../utils/data";
+import axios from "axios";
+import useAppliedJob from "../hooks/useAppliedJob";
+
 
 const jobperPage=10;
 function HomePage() {
@@ -24,6 +26,8 @@ function HomePage() {
     const[selectedSalary,setSelectedSalary]=useState([])
     const[selectedExperience,setSelectedExperience]=useState("")
     const[search,setSearch]=useState("")
+      const{appliedJob,fetchAppliedJob}=useAppliedJob()
+
 
     const fetchJobs=async({page,jobType,skills,minSalary,maxSalary,selectedExperience,search})=>{
       if(loading) return
@@ -39,7 +43,7 @@ function HomePage() {
             params.append("experienceLevel",selectedExperience)
           params.append("search",search)
             // const response=await axiosInstance.get(`${import.meta.env.VITE_SERVER_BASE_URL}/jobs?page=${page}&limit=${jobperPage}&type=${jobType.join(",")}&skills=${skills.join(",")}`)
-              const response=await axiosInstance.get(`${import.meta.env.VITE_SERVER_BASE_URL}/jobs?${params.toString()}`)
+              const response=await axios.get(`${import.meta.env.VITE_SERVER_BASE_URL}/jobs?${params.toString()}`)
 
             console.log(response?.data?.data)
             const newJobs=response?.data?.data
@@ -109,6 +113,13 @@ function HomePage() {
     setSelectedSalary("")
   }
 
+
+
+  const appliedJobIds=useMemo(()=>{
+    return appliedJob?.map((item)=>item?.jobId) 
+  },[jobs,appliedJob])
+
+
   return (
     <main className="container mx-auto px-4 py-8">
       <HeroSection />
@@ -154,7 +165,7 @@ function HomePage() {
 
       <div className="grid gap-4 md:gap-6">
         {loading  ? (<Loading/>) :(<>
-                {Array.isArray(jobs) && jobs?.map((job)=><JobCard key={job?.id} job={job} />) }
+                {Array.isArray(jobs) && jobs?.map((job)=><JobCard key={job?.id} job={job} appliedJobIds={appliedJobIds} appliedJob={appliedJob} fetchAppliedJob={fetchAppliedJob}/>) }
 
 
         </>) }

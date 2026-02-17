@@ -40,11 +40,11 @@ function SimilarJobs({jobDetails}) {
                 </a>
               </h3>
               <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-2">
-                CloudScale Inc • Austin, TX • Remote
+                {item?.company?.name} • {item?.company?.location} • {item?.type}
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-[hsl(var(--color-primary))]">
-                  $110k - $160k
+                  ${item?.salaryMin}k - ${item?.salaryMax}k
                 </span>
                 <a
                   href="job-details.html"

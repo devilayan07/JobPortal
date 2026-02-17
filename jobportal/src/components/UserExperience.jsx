@@ -8,7 +8,7 @@ function UserExperience({experience}) {
                         </h2>
                         <div className="space-y-6">
                             {/* <!-- Experience 1 --> */}
-                            {experience?.map((item)=> <div key={item}
+                            { Array.isArray(experience) && experience?.map((item)=> <div key={item}
                                 className="relative pl-8 pb-6 border-l-2 border-[hsl(var(--color-border))] last:pb-0"
                             >
                                 <div

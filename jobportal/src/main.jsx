@@ -6,14 +6,20 @@ import App from "./App.jsx";
 import JobProvider from "./providers/JobProvider.jsx";
 import AuthProvider from "./providers/AuthProvider.jsx";
 import { ToastContainer } from "react-toastify";
-
+import AppliedJobProvider from "./providers/AppliedJobProvider.jsx";
+import { Provider } from "react-redux";
+import store from "./app/store.js";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Router>
       <AuthProvider>
         <JobProvider>
-          <ToastContainer/>
-          <App />
+          <AppliedJobProvider>
+            <ToastContainer />
+            <Provider store={store}>
+              <App />
+            </Provider>
+          </AppliedJobProvider>
         </JobProvider>
       </AuthProvider>
     </Router>

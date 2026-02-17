@@ -23,9 +23,9 @@ const responseIntercept=axiosInstance.interceptors.response.use((response)=>{
 
 },(error)=>{
     console.log(error?.response)
-    if(error?.response && error?.response.status===401){
+    if(error?.response && error?.response.status===401 || error.response.status===400){
         console.log("Unauthorized logging out...")
-        localStorage.removeItem("token")
+        localStorage.removeItem(auth)
         window.location.href="/login"
     }
     return Promise.reject(error)

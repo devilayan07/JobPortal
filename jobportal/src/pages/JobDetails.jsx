@@ -4,17 +4,36 @@ import JobOverview from "../components/JobOverview";
 import SimilarJobs from "../components/SimilarJobs";
 import JobDescription from "../components/JobDescription";
 import { ChevronRight } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Globe } from "lucide-react";
 import axios from "axios";
+import { getDateMonthYear } from "../utils";
+import { Link } from "react-router-dom";
+import { MapPin } from "lucide-react";
+import { Users } from "lucide-react";
+import { Calendar } from "lucide-react";
+import { Building2 } from "lucide-react";
+import { Send } from "lucide-react";
+import AppliedJobModal from "../components/AppliedJobModal";
+import useAppliedJob from "../hooks/useAppliedJob";
+import useAuth from "../hooks/useAuth";
+import { toast } from "react-toastify";
+import useAxios from "../hooks/useAxios";
 function JobDetails() {
    const {slug}=useParams()
    console.log(slug)
+   const[showModal,setShowModal]=useState(false)
    const[jobDetails,setJobDetails]=useState(null)
+   const {fetchAppliedJob,appliedJob}=useAppliedJob()
+   const{auth}=useAuth()
+   const{navigate}=useNavigate()
+   const{axiosInstance}=useAxios()
+   const appliedJobIds=appliedJob?.map((item)=>item?.jobId)
+   const appliedJobId=appliedJobIds.includes(jobDetails?.id)
 
    const fetchJobDetails=async()=>{
     try {
         const response=await axios.get(`${import.meta.env.VITE_SERVER_BASE_URL}/jobs/${slug}`)
-        console.log(response?.data?.data)
         setJobDetails(response?.data?.data)
         
     } catch (error) {
@@ -27,8 +46,33 @@ function JobDetails() {
     fetchJobDetails()
    },[slug])
 
+     const handleNavigate=()=>{
+       toast("Please login to apply for a post")
+       navigate("/login")
+     }
+
+     const handleWithDrawApplication=async(jobId)=>{
+       const filterJobs=appliedJob?.filter((item)=>item?.jobId===jobId)
+       const applicationId=filterJobs[0].id
+
+       try {
+        const response=await axiosInstance.delete(`${import.meta.env.VITE_SERVER_BASE_URL}/applications/${applicationId}`)
+        if(response?.status===200){
+          toast.success(response?.data?.message)
+          await fetchAppliedJob()
+           fetchJobDetails()
+        }
+        
+       } catch (error) {
+        console.log(error)
+        
+       }
+     }
+   
+
   return (
-    <main className="container mx-auto px-4 py-8">
+    <>
+        <main className="container mx-auto px-4 py-8">
       <nav className="mb-6 flex items-center gap-2 text-sm text-[hsl(var(--color-muted-foreground))]">
         <a
           href="../index.html"
@@ -79,27 +123,38 @@ function JobDetails() {
                 </p>
               </div>
 
-              <button
-                className="btn btn-primary w-full text-base"
-                onclick="openApplyDialog()"
+         {auth?.user  ? (appliedJobId ? (<button
+                className="btn h-10 px-4 py-2 bg-red-500 w-full text-base"
+                onClick={()=>handleWithDrawApplication(jobDetails?.id)}
               >
-                <i data-lucide="send" className="h-4 w-4 mr-2"></i>
+                WithDraw Application
+              </button>):(<button
+                className="btn btn-primary w-full text-base"
+              onClick={()=>setShowModal(true)}
+              >
+                <Send className="h-4 w-4 mr-2"/>
                 Apply Now
-              </button>
+              </button>))  : <button
+                className="btn btn-primary w-full text-base"
+              onClick={handleNavigate}
+              >
+                <Send className="h-4 w-4 mr-2"/>
+                Apply Now
+              </button> }     
 
               <div className="pt-4 border-t border-[hsl(var(--color-border))] space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-[hsl(var(--color-muted-foreground))]">
                     Applicants
                   </span>
-                  <span className="font-medium">47</span>
+                  <span className="font-medium">{jobDetails?.applicants}</span>
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-[hsl(var(--color-muted-foreground))]">
                     Posted
                   </span>
-                  <span className="font-medium">2 days ago</span>
+                  <span className="font-medium">{getDateMonthYear(jobDetails?.createdAt)}</span>
                 </div>
               </div>
             </div>
@@ -110,64 +165,47 @@ function JobDetails() {
             <h3 className="text-lg font-semibold mb-4">About Company</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="h-16 w-16 rounded-lg bg-[hsl(var(--color-secondary))] flex items-center justify-center flex-shrink-0">
-                  <i
-                    data-lucide="building-2"
-                    className="h-8 w-8 text-[hsl(var(--color-primary))]"
-                  ></i>
+                <div className="h-16 w-16 rounded-lg bg-[hsl(var(--color-secondary))] flex items-center justify-center shrink-0">
+                  <Building2  className="h-8 w-8 text-[hsl(var(--color-primary))]"/>
                 </div>
                 <div>
-                  <h4 className="font-semibold">TechCorp Solutions</h4>
+                  <h4 className="font-semibold">{jobDetails?.company?.name}</h4>
                   <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
-                    Technology & Software
+                    {jobDetails?.company?.industry}
                   </p>
                 </div>
               </div>
 
               <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
-                TechCorp Solutions is a leading technology company specializing
-                in enterprise software solutions. We help businesses transform
-                their operations through innovative technology.
+                {jobDetails?.company?.description}
               </p>
 
               <div className="space-y-2 pt-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <i
-                    data-lucide="globe"
-                    className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"
-                  ></i>
-                  <a
-                    href="#"
+                  <Globe className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"/>
+                  <Link
+                    to={jobDetails?.company?.websiteUrl}
                     className="text-[hsl(var(--color-primary))] hover:underline"
                   >
-                    www.techcorp.com
-                  </a>
+                    {jobDetails?.company?.websiteUrl}
+                  </Link>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <i
-                    data-lucide="map-pin"
-                    className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"
-                  ></i>
+                  <MapPin className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"/>
                   <span className="text-[hsl(var(--color-muted-foreground))]">
-                    San Francisco, CA
+                  {jobDetails?.company?.location}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <i
-                    data-lucide="users"
-                    className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"
-                  ></i>
+                  <Users  className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"/>
                   <span className="text-[hsl(var(--color-muted-foreground))]">
-                    500-1000 employees
+                    {jobDetails?.company?.employeeCount} employees
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <i
-                    data-lucide="calendar"
-                    className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"
-                  ></i>
+                  <Calendar  className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]"/>
                   <span className="text-[hsl(var(--color-muted-foreground))]">
-                    Founded in 2010
+                    Founded in {jobDetails?.company?.foundedYear}
                   </span>
                 </div>
               </div>
@@ -217,6 +255,9 @@ function JobDetails() {
         </div>
       </div>
     </main>
+    {showModal && <AppliedJobModal onClose={()=>setShowModal(false)} jobId={jobDetails?.id} fetchAppliedJob={fetchAppliedJob}/>}
+    </>
+
   );
 }
 

@@ -86,7 +86,7 @@ function UserResume({resumeName,resumeDate,resumeUrl,fetchUserInfo}) {
     setSelectedFile(selectFile);
 
      const formData=new FormData()
-     formData.append("resume",selectedFile)
+     formData.append("resume",e.target.files[0])
 
      try {
       const response=await axiosInstance.post(`${import.meta.env.VITE_SERVER_BASE_URL}/users/resume`,formData)

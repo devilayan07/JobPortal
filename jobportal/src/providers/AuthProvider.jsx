@@ -1,5 +1,6 @@
 import {  useState } from "react"
 import { AuthContext } from "../context"
+import { Navigate } from "react-router-dom";
 
 
 const AuthProvider=({children})=>{
@@ -7,7 +8,9 @@ const AuthProvider=({children})=>{
         const stored=localStorage.getItem("auth");
         return stored ? JSON.parse(stored) :null
     })
+      
 
+      
     const logIn=(authData)=>{
         setAuth(authData)
         localStorage.setItem("auth",JSON.stringify(authData))
@@ -16,6 +19,7 @@ const AuthProvider=({children})=>{
     const logOut=()=>{
         setAuth(null)
         localStorage.removeItem("auth")
+        localStorage.removeItem("slug")
     }
     return(
         <AuthContext.Provider value={{auth,setAuth,logIn,logOut}}>

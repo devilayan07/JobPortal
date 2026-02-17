@@ -21,8 +21,8 @@ function LoginFormForUser() {
             if(response?.status===200){
                 console.log(response?.data)
                 const {data,token}=response.data
-                logIn({user:data,token})
-                navigate("/")
+                logIn({profile:data,role:data?.role,token})
+                navigate("/profile")
                 
             }
 
@@ -68,7 +68,7 @@ function LoginFormForUser() {
       </div>
 
                   <div className="space-y-2">
-        <label for="email" className="label">
+        <label for="role" className="label">
           Role
           <span className="text-red-500">*</span>
         </label>
@@ -120,7 +120,7 @@ function LoginFormForUser() {
         <p className="text-red-500">{errors.password && errors.password.message}</p>
 
         </div>
-        {errors.root?.serverError.type===401 && <p className='text-center text-red-500'>{errors?.root?.serverError?.message}</p> }
+        {errors.root?.serverError.type===400 && <p className='text-center text-red-500'>{errors?.root?.serverError?.message}</p> }
 
       </div>
 
