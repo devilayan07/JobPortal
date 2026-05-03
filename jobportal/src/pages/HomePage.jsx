@@ -115,9 +115,13 @@ function HomePage() {
 
 
 
-  const appliedJobIds=useMemo(()=>{
-    return appliedJob?.map((item)=>item?.jobId) 
-  },[jobs,appliedJob])
+  // const appliedJobIds=useMemo(()=>{
+  //   return appliedJob?.map((item)=>item?.jobId) 
+  // },[jobs,appliedJob])
+
+    const appliedJobIds= appliedJob?.map((item)=>item?.jobId) 
+
+
 
 
   return (

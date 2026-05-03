@@ -65,7 +65,7 @@ function CompanyHeader() {
                 <Building2 className="h-4 w-4 text-[hsl(var(--color-primary))]"/>
             </div>
             <span className="text-sm font-medium hidden md:inline">
-              TechCorp Solutions
+              {auth?.profile?.name}
             </span>
           </div>
         </div>

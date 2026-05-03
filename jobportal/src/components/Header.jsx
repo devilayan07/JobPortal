@@ -20,8 +20,8 @@ function Header() {
               </Link>
             </div>
             <div className="flex items-center gap-4">
-              <Link to={"/login"} className="btn btn-ghost text-sm">
-                Sign In
+              <Link to={"/login"} className="text-sm bg-green-500 rounded-md px-3 py-2 text-white">
+                Candidate Login
               </Link>
 
               <Link

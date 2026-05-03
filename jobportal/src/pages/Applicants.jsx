@@ -41,8 +41,10 @@ function Applicants() {
         else{
                   if(response?.status===200){
           console.log(response?.data?.data,"applicants")
-
-          setApplicants(prevApplicants=>[...prevApplicants,...response.data.data])
+              setApplicants((prev)=>
+                [...prev,...response.data.data]
+              )
+          // setApplicants(prevApplicants=>[...prevApplicants,...response.data.data])
           setPage((prev)=>prev+1)
         }
 
@@ -62,7 +64,7 @@ function Applicants() {
     const onIntersection=(items)=>{
       const loaderItem=items[0];
 
-      if(loaderItem.isIntersecting && hasMore){
+      if(loaderItem.isIntersecting && hasMore && !isLoading){
           fetchApplicants()
       }
 
@@ -78,7 +80,7 @@ function Applicants() {
     return ()=>{
       if(observer) observer.disconnect()
     }
-  },[hasMore,page])
+  },[hasMore,isLoading])
 
 
  useEffect(()=>{

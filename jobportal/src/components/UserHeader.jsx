@@ -53,9 +53,9 @@ function UserHeader() {
 
           )
  }
-          <a href="register-company.html" className="btn btn-primary text-sm">
+          {/* <a href="register-company.html" className="btn btn-primary text-sm">
             Post a Job
-          </a>
+          </a> */}
 
         </div>
       </div>

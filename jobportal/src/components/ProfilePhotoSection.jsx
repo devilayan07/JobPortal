@@ -1,21 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {  useRef, useState } from "react";
 import { User } from "lucide-react";
 import { Camera } from "lucide-react";
 import { Upload } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import useAxios from "../hooks/useAxios";
 import { toast } from "react-toastify";
+import ImageModal from "./Modal/ImageModal";
 function ProfilePhotoSection({ user,fetchUserInfo }) {
   const { axiosInstance } = useAxios();
   const fileUploadRef=useRef(null)
   const [selectedFile,setSelectedFile]=useState(null)
   const[imageError,setImageError]=useState("")
 const [preview, setPreview] = useState(null);
-
-
-  const imageUrl = user?.profilePictureUrl
+const[isModalOpen,setIsModalOpen]=useState(false)
+  
+const imageUrl = user?.profilePictureUrl
     ? `${import.meta.env.VITE_PDF_URL}${user.profilePictureUrl}`
     : null;
+console.log(imageUrl,"imageUrl")
+
+
 
     const handleImageUpload=(e)=>{
         e.preventDefault()
@@ -49,13 +53,24 @@ const [preview, setPreview] = useState(null);
         setImageError("");
     setSelectedFile(selectFile);
     setPreview(URL.createObjectURL(selectFile));
+    setIsModalOpen(true)
 
 
 
 
     }
 
-    const uploadPhoto=async()=>{
+    const handleClose=()=>{
+      setIsModalOpen(false)
+        if (preview) URL.revokeObjectURL(preview); // ✅ Clean up
+
+      setSelectedFile(null)
+      setPreview(null)
+      fileUploadRef.current.value=""
+
+    }
+
+    const handleSave=async()=>{
         if(!selectedFile) return;
 
         try {
@@ -63,46 +78,42 @@ const [preview, setPreview] = useState(null);
             formData.append("profilePicture",selectedFile)
             const response=await axiosInstance.post(`${import.meta.env.VITE_SERVER_BASE_URL}/users/profile-picture`,formData)
             if(response?.status===200){
+                 
                 fetchUserInfo()
+                handleClose()
                 toast.success("Profile Picture updated")
+                fileUploadRef.current.value=""; // reset input
             }
             
         } catch (error) {
             console.log(error)
-            
+            toast.error("Failed to update the picture")
         }
 
     }
 
-    useEffect(()=>{
-        if(selectedFile){
-            uploadPhoto()
-        }
-    },[selectedFile])
   return (
-    <div className="card p-6">
+    <>
+        <div className="card p-6">
       <h2 className="text-xl font-semibold mb-6">Profile Photo</h2>
       <div className="flex flex-col md:flex-row items-center gap-6">
         <div className="relative shrink-0">
           <div className="h-32 w-32 rounded-full bg-[hsl(var(--color-secondary))] flex items-center justify-center">
-            {
-                preview ? (
-                                  <img
-                src={preview}
-                alt="Upload preview"
-                className="image-preview"
-              />
 
-                ):
-                     imageUrl ? (
-              <img
+            {
+              imageUrl ? (
+                              <img
                 src={imageUrl}
                 alt="Upload preview"
                 className="image-preview"
               />
-            ) : (
-              <User className="h-16 w-16 text-[hsl(var(--color-primary))]" />
-            )}
+
+
+              ):(
+                             <User className="h-16 w-16 text-[hsl(var(--color-primary))]" />
+
+              )
+            }
 
 
                 
@@ -114,7 +125,7 @@ const [preview, setPreview] = useState(null);
         <div className="flex-1">
           <h3 className="font-medium mb-2">Upload Profile Picture</h3>
           <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-4">
-            JPG, PNG or GIF. Max size of 5MB.
+            JPG, PNG or GIF. Max size of 2MB.
           </p>
           <div className="flex gap-2">
             <button className="btn btn-primary cursor-pointer" onClick={handleImageUpload}>
@@ -129,6 +140,11 @@ const [preview, setPreview] = useState(null);
         </div>
       </div>
     </div>
+    {
+      isModalOpen && <ImageModal preview={preview} onClose={handleClose} onSave={handleSave}/>
+    }
+    </>
+
   );
 }
 

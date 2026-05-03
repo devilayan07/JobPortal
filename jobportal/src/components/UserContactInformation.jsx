@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import { Phone } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function UserContactInformation({phone,email,location,linkdinUrl}) {
   return (
@@ -51,12 +52,12 @@ function UserContactInformation({phone,email,location,linkdinUrl}) {
             <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
               LinkedIn
             </p>
-            <a
-              href="#"
+            <Link
+              to={linkdinUrl}
               className="font-medium text-[hsl(var(--color-primary))] hover:underline"
             >
                 {linkdinUrl}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -26,10 +26,14 @@ function JobDetails() {
    const[jobDetails,setJobDetails]=useState(null)
    const {fetchAppliedJob,appliedJob}=useAppliedJob()
    const{auth}=useAuth()
-   const{navigate}=useNavigate()
+   const navigate=useNavigate()
    const{axiosInstance}=useAxios()
-   const appliedJobIds=appliedJob?.map((item)=>item?.jobId)
-   const appliedJobId=appliedJobIds.includes(jobDetails?.id)
+  //  const appliedJobIds=appliedJob?.map((item)=>item?.jobId)
+  //  const appliedJobId=appliedJobIds.includes(jobDetails?.id)
+const appliedJobId = appliedJob?.some(
+  item => item.jobId === jobDetails?.id
+)  
+console.log(appliedJobId,"appliedJobId")
 
    const fetchJobDetails=async()=>{
     try {
@@ -44,6 +48,7 @@ function JobDetails() {
 
    useEffect(()=>{
     fetchJobDetails()
+    fetchAppliedJob()
    },[slug])
 
      const handleNavigate=()=>{
@@ -69,7 +74,9 @@ function JobDetails() {
        }
      }
    
-
+  if(!jobDetails){
+    return <p>Loading...</p>
+  }
   return (
     <>
         <main className="container mx-auto px-4 py-8">
@@ -123,7 +130,7 @@ function JobDetails() {
                 </p>
               </div>
 
-         {auth?.user  ? (appliedJobId ? (<button
+         {auth?.role==="USER"  ? (appliedJobId ? (<button
                 className="btn h-10 px-4 py-2 bg-red-500 w-full text-base"
                 onClick={()=>handleWithDrawApplication(jobDetails?.id)}
               >

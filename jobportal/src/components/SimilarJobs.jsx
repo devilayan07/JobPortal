@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Code } from "lucide-react";
 import axios from "axios";
-function SimilarJobs({jobDetails}) {
+ function SimilarJobs({jobDetails}) {
     const[similarJob,setSimilarJob]=useState([])
-    const id=jobDetails?.id
+    const id= jobDetails?.id
     console.log(id,"id")
 
     const fetchSimilarJobs=async()=>{

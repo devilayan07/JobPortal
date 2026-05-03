@@ -23,10 +23,14 @@ const responseIntercept=axiosInstance.interceptors.response.use((response)=>{
 
 },(error)=>{
     console.log(error?.response)
-    if(error?.response && error?.response.status===401 || error.response.status===400){
-        console.log("Unauthorized logging out...")
-        localStorage.removeItem(auth)
-        window.location.href="/login"
+    const status=error?.response?.status;
+    const isPublicPage=["/jobDetails","/"].some((path)=>window.location.pathname.startsWith(path))
+
+    if(status===401 && !isPublicPage){
+              console.log("Unauthorized, logging out...");
+      localStorage.removeItem("auth");
+      window.location.href = "/login";
+
     }
     return Promise.reject(error)
 })
